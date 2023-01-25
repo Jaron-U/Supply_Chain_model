@@ -1,0 +1,20 @@
+type engine;
+
+type part_type;
+distinct part_type engine, wheel;
+
+#engine ~ Poisson(5);
+
+//the following correspond to root nodes in the bayes net.
+
+random Real Production_engine(engine e, Timestep t) ~
+   Gaussian(2.5, 0.2);
+
+random Integer inventory_engine(Timestep t) ~
+    if t == @0 then 0
+    else Production_engine - Demand_engine(t);
+
+random Real Demand_engine(engine e, Timestep t) ~
+    if t == @0 then Gaussian(2.5, 0.2)
+    else Gaussian(2.5, 0.2) - inventory_engine(t);
+
