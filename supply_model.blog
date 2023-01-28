@@ -1,24 +1,22 @@
 type engine;
-type wheel;
 
 //type part_type;
 // I do not think we can use the distinct. 
 // cause the Categorical means the propaility of object generation.
-//distinct part_type engine, wheel;
+//distinct  part_type engine, wheel;
 
 // #engine ~ Poisson(5); we do not need this
 
 // the following correspond to root nodes in the bayes net.
 
-random Real Production_engine(Timestep t) ~
+random Real Count(Timestep t) ~
    Gaussian(2.5, 0.2);
 
-random Real Production_wheel(Timestep t) ~
-	Gaussian(5, 1);
-
 //The percentage of the number of engine transports 
-random Real engine_shipped(Timestep t) ~
+random Real engine_shipped_percentage(Timestep t) ~
 	UniformReal(0.8, 0.99);
+
+
 
 // prodcution - shipped
 random Integer inventory_engine(Timestep t) ~
