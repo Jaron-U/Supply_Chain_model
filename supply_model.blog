@@ -8,27 +8,42 @@ type engine;
 // #engine ~ Poisson(5); we do not need this
 
 // the following correspond to root nodes in the bayes net.
-
-random Real Count(Timestep t) ~
-   Gaussian(2.5, 0.2);
+//engine number has built
+random Real engine_count(Timestep t) ~
+   Gaussian(25, 0.2);
 
 //The percentage of the number of engine transports 
 random Real engine_shipped_percentage(Timestep t) ~
 	UniformReal(0.8, 0.99);
 
+//This function is used to determine if the engine is delayed in delivery
+random Boolean shipping_delay(Timestep t) ~
+	BooleanDistrib(0.5);
 
+//Idea: The number of engines shipped is:Number of engines * Percentage of 
+//engines shipped. If there is a delayed shipment, then the current number 
+//of transports is 0. If there is no delayed transport, then 
+//the current number of transports is the number of engines * the 
+//percentage of engine transports plus the number of all 
+//previous engines that were delayed.
+
+random Real engine_shipped_number(Timestep t) ~
+	if t == @0 then engine_count(t) * engine_shipped_percentage(t)
+	else if shipping_delay(t) then 0.0
+	else if shipping_delay(prev(t)) then engine_count(t) * engine_shipped_percentage(t)+engine_count(prev(t)) * engine_shipped_percentage(prev(t))
+	else engine_count(t) * engine_shipped_percentage(t);
 
 // prodcution - shipped
-random Integer inventory_engine(Timestep t) ~
-    if t == @0 then 0
+//fixed Integer inventory_engine(Timestep t) =
+//    if shipping_delay(t) then engine_count(t)+invetroy_engine(t-1) 
 //    else Production_engine(t);
-	else Gaussian(2, 0.1);
+//	else inventroy_engine(t) - ;
 
-random Real Demand_engine_R(Timestep t) ~
-	Gaussian(2.5, 0.2);
+//random Real Demand_engine_R(Timestep t) ~
+//	Gaussian(2.5, 0.2);
 
-random Real Demand_engine(Timestep t) ~
-    if t == @0 then Gaussian(2.5, 0.2)
-	else Demand_engine_R(t) - inventory_engine(t);
+//random Real Demand_engine(Timestep t) ~
+//    if t == @0 then Gaussian(2.5, 0.2)
+//	else Demand_engine_R(t) - inventory_engine(t);
 //    else Gaussian(2.5, 0.2) - inventory_engine(t); invaild
 
