@@ -18,7 +18,7 @@ random Real engine_shipped_percentage(Timestep t) ~
 
 //This function is used to determine if the engine is delayed in delivery
 random Boolean shipping_delay(Timestep t) ~
-	BooleanDistrib(0.5);
+	BooleanDistrib(0.2);
 
 //Idea: The number of engines shipped is:Number of engines * Percentage of 
 //engines shipped. If there is a delayed shipment, then the current number 
